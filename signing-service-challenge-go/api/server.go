@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/esnchez/coding-challenges/signing-service-challenge/service"
 )
 
 // Response is the generic API response container.
@@ -18,13 +20,15 @@ type ErrorResponse struct {
 // Server manages HTTP requests and dispatches them to the appropriate services.
 type Server struct {
 	listenAddress string
+	svc           *service.SignatureService
 }
 
 // NewServer is a factory to instantiate a new Server.
-func NewServer(listenAddress string) *Server {
+func NewServer(listenAddress string, svc *service.SignatureService) *Server {
 	return &Server{
 		listenAddress: listenAddress,
 		// TODO: add services / further dependencies here ...
+		svc: svc,
 	}
 }
 
@@ -35,6 +39,9 @@ func (s *Server) Run() error {
 	mux.Handle("/api/v0/health", http.HandlerFunc(s.Health))
 
 	// TODO: register further HandlerFuncs here ...
+	mux.Handle("/api/v0/create", http.HandlerFunc(s.handleCreateSignatureDevice))
+	mux.Handle("/api/v0/sign", http.HandlerFunc(s.handleSignTransaction))
+	mux.Handle("/api/v0/devices", http.HandlerFunc(s.handleGetAllDevices))
 
 	return http.ListenAndServe(s.listenAddress, mux)
 }
