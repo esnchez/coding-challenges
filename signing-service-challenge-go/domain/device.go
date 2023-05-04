@@ -14,6 +14,7 @@ import (
 // TODO: signature device domain model ...
 
 var ErrInvalidAlgorithm = errors.New("Signature device cannot be created with the specified data")
+var ErrInvalidDataToBeSigned = errors.New("Data to be signed is required")
 var ErrSignOperation = errors.New("Signature device failed during signing operation")
 
 type SigDevice struct {

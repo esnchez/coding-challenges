@@ -12,8 +12,8 @@ import (
 
 // TODO: REST endpoints ...
 
-//handleCreateSignatureDevice handles the creation of a signature device and stores it in the repository
-//only POST method allowed, checks and validates request values and returns response/errors and http codes
+// handleCreateSignatureDevice handles the creation of a signature device and stores it in the repository
+// only POST method allowed, checks and validates request values and returns response/errors and http codes
 func (s *Server) handleCreateSignatureDevice(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		WriteErrorResponse(rw, http.StatusMethodNotAllowed, []string{
@@ -54,6 +54,7 @@ func (s *Server) handleCreateSignatureDevice(rw http.ResponseWriter, r *http.Req
 				http.StatusText(http.StatusNotImplemented),
 				err.Error(),
 			})
+			return
 		}
 	}
 
@@ -64,8 +65,8 @@ func (s *Server) handleCreateSignatureDevice(rw http.ResponseWriter, r *http.Req
 	WriteAPIResponse(rw, http.StatusOK, resp)
 }
 
-//handleSignTransaction handles the signature of arbitrary data after retrieving successfully a signature device from persistence via its unique id
-//only POST method allowed, checks and validates request values and returns response/errors and http codes
+// handleSignTransaction handles the signature of arbitrary data after retrieving successfully a signature device from persistence via its unique id
+// only POST method allowed, checks and validates request values and returns response/errors and http codes
 func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		WriteErrorResponse(rw, http.StatusMethodNotAllowed, []string{
@@ -87,14 +88,21 @@ func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		WriteErrorResponse(rw, http.StatusBadRequest, []string{
 			http.StatusText(http.StatusBadRequest),
-			fmt.Sprintf("Id format is not valid: %s",err.Error()),
+			fmt.Sprintf("Id format is not valid: %s", err.Error()),
 		})
 	}
 
-	sig, data, err := s.svc.SignTransaction(id, []byte(req.Data))
+	sig, data, err := s.svc.SignTransaction(id, req.Data)
 	if err != nil {
 
 		switch err {
+		case domain.ErrInvalidDataToBeSigned:
+			WriteErrorResponse(rw, http.StatusBadRequest, []string{
+				http.StatusText(http.StatusBadRequest),
+				err.Error(),
+			})
+			return
+
 		case persistence.ErrNotFound:
 			WriteErrorResponse(rw, http.StatusBadRequest, []string{
 				http.StatusText(http.StatusBadRequest),
@@ -114,6 +122,7 @@ func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) 
 				http.StatusText(http.StatusNotImplemented),
 				err.Error(),
 			})
+			return
 		}
 
 	}
@@ -125,7 +134,6 @@ func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) 
 
 	WriteAPIResponse(rw, http.StatusOK, resp)
 }
-
 
 func (s *Server) handleGetAllDevices(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

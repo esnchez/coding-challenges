@@ -13,7 +13,7 @@ type CreateSignatureDeviceResponse struct {
 
 type SignatureRequest struct {
 	DeviceID string `json:"device_id"`
-	Data     string `json:"data"`
+	Data     string `json:"data" `
 }
 
 type SignatureResponse struct {

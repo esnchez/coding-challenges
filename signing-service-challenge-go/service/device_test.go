@@ -45,7 +45,7 @@ func Test_SignTransactionWithInvalidOrNoDevice(t *testing.T) {
 
 	msg := "Testing message transaction"
 
-	_, _ , err := svc.SignTransaction(uuid.UUID{}, []byte(msg))
+	_, _ , err := svc.SignTransaction(uuid.UUID{}, msg)
 	if err != nil {
 		assert.Equal(t, persistence.ErrNotFound, err)
 	}
@@ -66,17 +66,17 @@ func Test_SignTransactionWithDevice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	msg := []byte("Testing message transaction")
+	msg := "Testing message transaction"
 
 
-	_ ,_, err = svc.SignTransaction(dev.ID,msg)
+	_ ,_, err = svc.SignTransaction(dev.ID, msg)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert.Equal(t, 1 , dev.GetCounter())
 
-	_ ,_, err = svc.SignTransaction(dev.ID,msg)
+	_ ,_, err = svc.SignTransaction(dev.ID, msg)
 	if err != nil {
 		t.Fatal(err)
 	}
