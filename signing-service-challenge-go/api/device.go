@@ -22,7 +22,7 @@ func (s *Server) handleCreateSignatureDevice(rw http.ResponseWriter, r *http.Req
 		return
 	}
 
-	req := new(domain.CreateSignatureDeviceRequest)
+	req := new(CreateSignatureDeviceRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		WriteErrorResponse(rw, http.StatusBadRequest, []string{
 			http.StatusText(http.StatusBadRequest),
@@ -58,7 +58,7 @@ func (s *Server) handleCreateSignatureDevice(rw http.ResponseWriter, r *http.Req
 		}
 	}
 
-	resp := domain.CreateSignatureDeviceResponse{
+	resp := CreateSignatureDeviceResponse{
 		Status: fmt.Sprintf("Signature device object created with ID: %s", dev.ID),
 	}
 
@@ -75,7 +75,7 @@ func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	req := new(domain.SignatureRequest)
+	req := new(SignatureRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		WriteErrorResponse(rw, http.StatusBadRequest, []string{
 			http.StatusText(http.StatusBadRequest),
@@ -127,7 +127,7 @@ func (s *Server) handleSignTransaction(rw http.ResponseWriter, r *http.Request) 
 
 	}
 
-	resp := domain.SignatureResponse{
+	resp := SignatureResponse{
 		Signature:  string(sig),
 		SignedData: string(data),
 	}

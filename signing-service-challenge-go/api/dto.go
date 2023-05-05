@@ -1,6 +1,4 @@
-package domain
-
-//dtos for sending responses and receiving requests to/from users in the api/handler layer
+package api
 
 type CreateSignatureDeviceRequest struct {
 	Algorithm string `json:"algorithm"`

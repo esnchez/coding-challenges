@@ -12,7 +12,7 @@ import (
 //MODIFY mutex or rwmutex?
 
 type MemStore struct {
-	mu      sync.RWMutex
+	mu      sync.Mutex
 	devices map[uuid.UUID]*domain.SigDevice
 }
 

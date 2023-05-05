@@ -48,7 +48,7 @@ func (s *SigDevice) Sign(data []byte) ([]byte, []byte, error) {
 
 	// s.counter++
 	// s.lastSignature = sig
-	go s.updateDeviceState(sig)
+	s.updateDeviceState(sig)
 
 	return sig, toSignData, nil
 }
